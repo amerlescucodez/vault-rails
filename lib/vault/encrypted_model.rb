@@ -178,6 +178,7 @@ module Vault
       def parse_transit_attributes(attribute, options)
         opts = {}
         opts[:path] = options[:path] || "transit"
+        table_name ||= "application"
         opts[:key] = options[:key] || "#{Vault::Rails.application}_#{table_name}_#{attribute}"
         opts[:context] = options[:context]
         opts[:default] = options[:default]
