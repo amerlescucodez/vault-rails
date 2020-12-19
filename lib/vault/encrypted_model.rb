@@ -60,8 +60,10 @@ module Vault
 
         if defined?(ActiveRecord::Type::Value)
           self.attribute attribute.to_s, ActiveRecord::Type::Value.new, default: nil
+        elsif defined?(Mongoid::Attributes::Dynamic)
+          self.attribute attribute.to_s, Mongoid::Attributes::Dynamic, default: nil
         else
-          self.attribute attribute.to_s, Object, default: nil
+          self.attribute attribute.to_s
         end
 
         # Getter
