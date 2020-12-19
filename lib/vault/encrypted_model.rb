@@ -58,8 +58,11 @@ module Vault
         # Make a note of this attribute so we can use it in the future (maybe).
         __vault_attributes[attribute.to_sym] = parsed_opts
 
-        self.attribute attribute.to_s, ActiveRecord::Type::Value.new,
-          default: nil
+        if defined?(ActiveRecord::Type::Value)
+          self.attribute attribute.to_s, ActiveRecord::Type::Value.new, default: nil
+        else
+          self.attribute attribute.to_s, Object, default: nil
+        end
 
         # Getter
         define_method("#{attribute}") do
@@ -332,11 +335,11 @@ module Vault
 
         # Only persist changed attributes to minimize requests - this helps
         # minimize the number of requests to Vault.
-        if ActiveRecord.gem_version >= Gem::Version.new("6.0")
+        if defined?(ActiveRecord) && ActiveRecord.gem_version >= Gem::Version.new("6.0")
           return unless previous_changes.include?(attribute)
-        elsif ActiveRecord.gem_version >= Gem::Version.new("5.2")
+        elsif defined?(ActiveRecord) && ActiveRecord.gem_version >= Gem::Version.new("5.2")
           return unless previous_changes_include?(attribute)
-        elsif ActiveRecord.gem_version >= Gem::Version.new("5.1")
+        elsif defined?(ActiveRecord) && ActiveRecord.gem_version >= Gem::Version.new("5.1")
           return unless saved_change_to_attribute?(attribute.to_s)
         else
           return unless attribute_changed?(attribute)
