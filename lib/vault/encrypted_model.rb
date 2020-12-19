@@ -58,13 +58,7 @@ module Vault
         # Make a note of this attribute so we can use it in the future (maybe).
         __vault_attributes[attribute.to_sym] = parsed_opts
 
-        if defined?(ActiveRecord::Type::Value)
-          self.attribute attribute.to_s, ActiveRecord::Type::Value.new, default: nil
-        elsif defined?(Mongoid::Attributes::Dynamic)
-          self.attribute attribute.to_s, Mongoid::Attributes::Dynamic, default: nil
-        else
-          self.attribute attribute.to_s
-        end
+        self.attribute(attribute.to_s)
 
         # Getter
         define_method("#{attribute}") do
